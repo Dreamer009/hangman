@@ -1,5 +1,5 @@
-# NEED TO END GAME AFTER ALL LETTERS ARE GUESSED
-# NEED TO HAVE GUESSES COUNT FOR DUPLICATE LETTERS
+#NEED TO END GAME AFTER ALL LETTERS ARE GUESSED
+#NEED TO HAVE GUESSES COUNT FOR DUPLICATE LETTERS
 class Hangman
   attr_accessor :word, :letters, :guess_count, :display_word, :word, :saved_word, :bad_guesses
   def initialize()
@@ -8,7 +8,7 @@ class Hangman
   def get_word
     new_word = nil
     while new_word.nil? || new_word.length == 0 do
-      puts "\n\n\n Starting new game of hangman \n\n Enter word to guess: "
+      puts "\n\n\n Starting new game of hangman \n\n Enter word or phrase to guess: "
       new_word = gets.gsub(/[^a-z\s]/, "").gsub(/\s+/, " ").downcase.strip
     end
     @display_word = new_word.gsub(/\w/, "_")
@@ -16,10 +16,6 @@ class Hangman
     return new_word
   end
   def draw_hangman
-    # todo: draw hangman here using guess_count
-   hangman_drawing
-  end
-  def hangman_drawing
     if @guess_count < 6
       puts "You have #{6 - @guess_count} guesses remaining"
     else
@@ -33,9 +29,6 @@ class Hangman
       |
       |--------------|
       "
-      puts "GAME OVER"
-      puts "correct word was " + @saved_word
-      play_game
     end
     if @guess_count == 5
       puts "
@@ -148,12 +141,19 @@ class Hangman
         solved = (@word.strip.size == 0)
 
         # do something with the right guess
+
       else
         puts "guess is wrong"
         @guess_count = @guess_count + 1
         @bad_guesses.push(guess)
+        if @guess_count == 6
+          puts "GAME OVER!"
+          puts "correct word was " + @saved_word
+          return
+        end
       end
       draw_hangman
+
     end
     if solved
       puts "YOU WIN!"
@@ -165,10 +165,12 @@ class Hangman
     while true do
       @word = get_word
       @saved_word = @word.dup
-      if @word.to_s.length == 0
+      play_game
+      puts "Do you want to play another game? (y/n)"
+      answer = gets.strip
+      if answer =~ /^n/i
         puts "Goodbye!"
-      else
-        play_game
+        return
       end
     end
   end
